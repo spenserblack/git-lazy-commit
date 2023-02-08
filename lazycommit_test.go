@@ -28,3 +28,48 @@ func TestOpenRepoError(t *testing.T) {
 		t.Fatal("expected repo to be nil")
 	}
 }
+
+// Tests that NoStaged returns true if there are no staged changes.
+func TestNoStaged(t *testing.T) {
+	dir := tempRepo(t)
+	// NOTE: Committing a file so that there's something in the worktree.
+	f := commitFile(t, dir, "test.txt", "test")
+	// NOTE: Adding some unstaged contents to the file
+	_, err := f.Write([]byte("changes"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	repo, err := OpenRepo(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	noStaged, err := repo.NoStaged()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !noStaged {
+		t.Fatal("expected no staged changes")
+	}
+}
+
+// Tests that NoStaged returns false if there are staged changes.
+func TestNoStagedStaged(t *testing.T) {
+	dir := tempRepo(t)
+	// NOTE: Committing a file so that there's something in the worktree.
+	commitFile(t, dir, "test.txt", "test")
+
+	repo, err := OpenRepo(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	addFile(t, dir, "test2.txt", "test")
+
+	noStaged, err := repo.NoStaged()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if noStaged {
+		t.Fatal("expected staged changes")
+	}
+}

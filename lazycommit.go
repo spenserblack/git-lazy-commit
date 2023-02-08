@@ -15,3 +15,24 @@ func OpenRepo(path string) (*LazyRepo, error) {
 	}
 	return (*LazyRepo)(repo), nil
 }
+
+// NoStaged checks if there are no staged changes (added files, changed files, removed files)
+// in the repository.
+func (r *LazyRepo) NoStaged() (bool, error) {
+	wt, err := (*git.Repository)(r).Worktree()
+	if err != nil {
+		return false, err
+	}
+	status, err := wt.Status()
+	if err != nil {
+		return false, err
+	}
+	
+	for _, file := range status {
+		if file.Staging != git.Unmodified {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
