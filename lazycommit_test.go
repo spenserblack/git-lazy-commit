@@ -17,3 +17,14 @@ func TestOpenRepo(t *testing.T) {
 		t.Fatal("repo is nil")
 	}
 }
+
+// Tests that, if a repo cannot be opened, OpenRepo returns an error.
+func TestOpenRepoError(t *testing.T) {
+	repo, err := OpenRepo(t.TempDir())
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if repo != nil {
+		t.Fatal("expected repo to be nil")
+	}
+}
