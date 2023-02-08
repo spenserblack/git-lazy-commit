@@ -1,5 +1,8 @@
 # Lazy Commit
 
+[![CI](https://github.com/spenserblack/git-lazy-commit/actions/workflows/ci.yml/badge.svg)](https://github.com/spenserblack/git-lazy-commit/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/spenserblack/git-lazy-commit/branch/main/graph/badge.svg?token=nFiCRNnexU)](https://codecov.io/gh/spenserblack/git-lazy-commit)
+
 Be lazy and just commit
 
 ## Description
