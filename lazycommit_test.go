@@ -2,8 +2,18 @@ package lazycommit
 
 import "testing"
 
-func TestAdd2(t *testing.T) {
-	if a := Add2(1); a != 3 {
-		t.Fatalf("Add2(1) = %d; want 3", a)
+// Tests that OpenRepo returns a LazyRepo if the repository can be opened.
+func TestOpenRepo(t *testing.T) {
+	dir := tempRepo(t)
+	var (
+		repo *LazyRepo
+		err  error
+	)
+	repo, err = OpenRepo(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if repo == nil {
+		t.Fatal("repo is nil")
 	}
 }
