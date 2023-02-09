@@ -12,11 +12,7 @@ import (
 
 // CommitMsg builds a commit message using the tracked files in the repository.
 func (r *LazyRepo) CommitMsg() (string, error) {
-	wt, err := (*git.Repository)(r).Worktree()
-	if err != nil {
-		return "", err
-	}
-	status, err := wt.Status()
+	status, err := r.status()
 	if err != nil {
 		return "", err
 	}

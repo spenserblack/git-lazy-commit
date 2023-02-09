@@ -19,11 +19,7 @@ func OpenRepo(path string) (*LazyRepo, error) {
 // NoStaged checks if there are no staged changes (added files, changed files, removed files)
 // in the repository.
 func (r *LazyRepo) NoStaged() (bool, error) {
-	wt, err := (*git.Repository)(r).Worktree()
-	if err != nil {
-		return false, err
-	}
-	status, err := wt.Status()
+	status, err := r.status()
 	if err != nil {
 		return false, err
 	}
@@ -44,4 +40,18 @@ func (r *LazyRepo) StageAll() error {
 		return err
 	}
 	return wt.AddWithOptions(&git.AddOptions{All: true})
+}
+
+// Worktree gets the repo's worktree.
+func (r *LazyRepo) worktree() (*git.Worktree, error) {
+	return (*git.Repository)(r).Worktree()
+}
+
+// Status gets the repo's status.
+func (r *LazyRepo) status() (git.Status, error) {
+	wt, err := r.worktree()
+	if err != nil {
+		return nil, err
+	}
+	return wt.Status()
 }
