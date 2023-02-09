@@ -36,3 +36,12 @@ func (r *LazyRepo) NoStaged() (bool, error) {
 
 	return true, nil
 }
+
+// StageAll stages all changes in the repository.
+func (r *LazyRepo) StageAll() error {
+	wt, err := (*git.Repository)(r).Worktree()
+	if err != nil {
+		return err
+	}
+	return wt.AddWithOptions(&git.AddOptions{All: true})
+}

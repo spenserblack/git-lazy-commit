@@ -20,8 +20,8 @@ func tempRepo(t *testing.T) string {
 	return dir
 }
 
-// Helper function that writes a file and stages it (but doesn't commit it).
-func addFile(t *testing.T, dir, filename, contents string) billy.File {
+// Helper function that writes a file, but does not stage or commit it.
+func writeFile(t *testing.T, dir, filename, contents string) (*git.Worktree, billy.File) {
 	t.Helper()
 	rawRepo, err := git.PlainOpen(dir)
 	if err != nil {
@@ -39,7 +39,15 @@ func addFile(t *testing.T, dir, filename, contents string) billy.File {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = wt.Add(filename)
+
+	return wt, f
+}
+
+// Helper function that writes a file and stages it (but doesn't commit it).
+func addFile(t *testing.T, dir, filename, contents string) billy.File {
+	t.Helper()
+	wt, f := writeFile(t, dir, filename, contents)
+	_, err := wt.Add(filename)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,4 +78,29 @@ func commitFile(t *testing.T, dir, filename, contents string) billy.File {
 		t.Fatal(err)
 	}
 	return f
+}
+
+// Helper function that gets the working tree of a repository.
+func getWorktree(t *testing.T, dir string) *git.Worktree {
+	t.Helper()
+	rawRepo, err := git.PlainOpen(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wt, err := rawRepo.Worktree()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return wt
+}
+
+// Helper function that gets the status of a repository.
+func getStatus(t *testing.T, dir string) git.Status {
+	t.Helper()
+	wt := getWorktree(t, dir)
+	status, err := wt.Status()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return status
 }
