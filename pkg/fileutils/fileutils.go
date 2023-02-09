@@ -22,16 +22,16 @@ func SharedDirectory(paths []string) string {
 	}
 
 	shared := ""
-	SharedDirLoop:
-		for i := 0; i < len(dirs[0]); i++ {
-			dir := dirs[0][i]
-			for _, d := range dirs[1:] {
-				if i >= len(d) || d[i] != dir {
-					break SharedDirLoop
-				}
+SharedDirLoop:
+	for i := 0; i < len(dirs[0]); i++ {
+		dir := dirs[0][i]
+		for _, d := range dirs[1:] {
+			if i >= len(d) || d[i] != dir {
+				break SharedDirLoop
 			}
-			shared = filepath.Join(shared, dir)
 		}
+		shared = filepath.Join(shared, dir)
+	}
 
 	if shared != "" {
 		return shared

@@ -27,7 +27,7 @@ func (r *LazyRepo) NoStaged() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	
+
 	for _, file := range status {
 		if file.Staging != git.Unmodified {
 			return false, nil
