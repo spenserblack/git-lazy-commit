@@ -5,7 +5,10 @@ package lazycommit
 import "github.com/go-git/go-git/v5"
 
 // LazyRepo is a wrapper around go-git's Repository for simpler usage.
-type LazyRepo git.Repository
+type LazyRepo struct {
+	*git.Repository
+	wt *git.Worktree
+}
 
 // OpenRepo opens a repository at the given path.
 func OpenRepo(path string) (*LazyRepo, error) {
@@ -13,7 +16,14 @@ func OpenRepo(path string) (*LazyRepo, error) {
 	if err != nil {
 		return nil, err
 	}
-	return (*LazyRepo)(repo), nil
+	wt, err := repo.Worktree()
+	if err != nil {
+		return nil, err
+	}
+	return &LazyRepo{
+		Repository: repo,
+		wt:         wt,
+	}, nil
 }
 
 // NoStaged checks if there are no staged changes (added files, changed files, removed files)
@@ -35,23 +45,10 @@ func (r *LazyRepo) NoStaged() (bool, error) {
 
 // StageAll stages all changes in the repository.
 func (r *LazyRepo) StageAll() error {
-	wt, err := (*git.Repository)(r).Worktree()
-	if err != nil {
-		return err
-	}
-	return wt.AddWithOptions(&git.AddOptions{All: true})
-}
-
-// Worktree gets the repo's worktree.
-func (r *LazyRepo) worktree() (*git.Worktree, error) {
-	return (*git.Repository)(r).Worktree()
+	return r.wt.AddWithOptions(&git.AddOptions{All: true})
 }
 
 // Status gets the repo's status.
 func (r *LazyRepo) status() (git.Status, error) {
-	wt, err := r.worktree()
-	if err != nil {
-		return nil, err
-	}
-	return wt.Status()
+	return r.wt.Status()
 }

@@ -20,12 +20,7 @@ func (r *LazyRepo) Commit() (hash plumbing.Hash, msg string, err error) {
 		return
 	}
 
-	wt, err := r.worktree()
-	if err != nil {
-		return
-	}
-
-	hash, err = wt.Commit(msg, &git.CommitOptions{})
+	hash, err = r.wt.Commit(msg, &git.CommitOptions{})
 	return
 }
 
