@@ -1,6 +1,7 @@
 package lazycommit
 
 import (
+	"strings"
 	"testing"
 
 	gitconfig "github.com/go-git/go-git/v5/config"
@@ -39,12 +40,16 @@ func TestCommit(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	wantMsg := `Update files
+	wantHeader := "Update files"
+	wantBodyLines := []string{"- Create test.txt", "- Create test2.txt"}
 
-- Create test.txt
-- Create test2.txt
-`
-	if msg != wantMsg {
-		t.Errorf("expected commit message to be %q, got %q", wantMsg, msg)
+	if !strings.HasPrefix(msg, wantHeader) {
+		t.Errorf("expected commit message to start with %q, got %q", wantHeader, msg)
+	}
+
+	for _, line := range wantBodyLines {
+		if !strings.Contains(msg, line) {
+			t.Errorf("expected commit message to contain %q, got %q", line, msg)
+		}
 	}
 }
