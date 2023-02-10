@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-git/go-billy/v5"
 	"github.com/go-git/go-git/v5"
+	gitconfig "github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
@@ -103,4 +104,22 @@ func getStatus(t *testing.T, dir string) git.Status {
 		t.Fatal(err)
 	}
 	return status
+}
+
+// Helper function that updates a repo's config.
+func updateConfig(t *testing.T, dir string, f func(*gitconfig.Config)) {
+	t.Helper()
+	rawRepo, err := git.PlainOpen(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	config, err := rawRepo.Config()
+	if err != nil {
+		t.Fatal(err)
+	}
+	f(config)
+	err = rawRepo.Storer.SetConfig(config)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
