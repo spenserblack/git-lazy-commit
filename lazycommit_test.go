@@ -34,7 +34,7 @@ func TestOpenRepoError(t *testing.T) {
 }
 
 // Tests that NoStaged returns true if there are no staged changes.
-func TestNoStaged(t *testing.T) {
+func TestNoStagedChanges(t *testing.T) {
 	dir := tempRepo(t)
 	// NOTE: Committing a file so that there's something in the worktree.
 	f := commitFile(t, dir, "test.txt", "test")
@@ -53,6 +53,27 @@ func TestNoStaged(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !noStaged {
+		t.Fatal("expected no staged changes")
+	}
+}
+
+// Tests that NoStaged returns true if there new files are not staged.
+func TestNoStagedNewFiles(t *testing.T) {
+	dir := tempRepo(t)
+	// NOTE: Committing a file so that there's something in the worktree.
+	commitFile(t, dir, "test.txt", "test")
+	writeFile(t, dir, "test2.txt", "test")
+
+	repo, err := OpenRepo(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	noStaged, err := repo.NoStaged()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !noStaged {
+		t.Logf("status: %v", getStatus(t, dir))
 		t.Fatal("expected no staged changes")
 	}
 }
