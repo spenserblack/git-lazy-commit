@@ -30,6 +30,11 @@ func (r *LazyRepo) CommitMsg() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	for filename, fileStatus := range status {
+		if fileStatus.Staging == git.Unmodified || fileStatus.Staging == git.Untracked {
+			delete(status, filename)
+		}
+	}
 
 	if len(status) == 0 {
 		return "", errors.New("no tracked files")
