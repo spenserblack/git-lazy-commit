@@ -45,7 +45,7 @@ Update public/
 - Create public/icons/favicon-32x32.png
 ```
 
-If your changes span multiple top-level directories, or at least one
+If there aren't any similar directories that all changes share, or at least one
 of the updated files is in the root of the repository, your commit message
 will look like this:
 
