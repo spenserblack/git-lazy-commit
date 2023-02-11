@@ -57,3 +57,10 @@ Update files
 - Update views.py
 - Update templates/myapp/index.html
 ```
+
+## Installation
+
+Download the appropriate executable from the [release assets][latest-release],
+rename it to `git-lzc`, and add it to a location in `PATH`.
+
+[latest-release]: https://github.com/spenserblack/git-lazy-commit/releases/latest
