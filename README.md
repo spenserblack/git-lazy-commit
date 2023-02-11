@@ -31,9 +31,7 @@ have any staged changes, then `git lzc` will commit *all* changes,
 a single file, the commit message will look like this:
 
 ```
-Update index.html
-
-- Update www/index.html
+Update www/index.html
 ```
 
 If you've changed multiple files that share a top-level directory, your
