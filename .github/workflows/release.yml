@@ -19,6 +19,10 @@ jobs:
         uses: spenserblack/actions-tag-to-release@v1
         with:
           prerelease: auto
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.20'
+          cache: true
       - name: Build Release Assets
         run: ./build.sh
       - name: Publish Assets
