@@ -1,30 +1,26 @@
-#!/bin/bash
+#!/bin/sh
 # Builds the binary for several platforms
-# TODO: More portable script that uses sh instead of bash
 set -e
 
-platforms=(
-	darwin-amd64
-	linux-amd64
-	linux-386
-	windows-amd64
-	windows-386
-	openbsd-amd64
-	openbsd-386
-	freebsd-amd64
-	freebsd-386
-	netbsd-amd64
-	netbsd-386
-)
-
-for platform in "${platforms[@]}"; do
-	goos=${platform%-*}
-	goarch=${platform##*-}
+build() {
+	platform=$1
+	goos=$(echo $platform | cut -d- -f1)
+	goarch=$(echo $platform | cut -d- -f2)
 	ext=""
 	if [ "$goos" = "windows" ]; then
 		ext=".exe"
 	fi
-	GOOS=${platform%-*} GOARCH=${platform##*-} go build -o "dist/git-lzc-$platform$ext" ./cmd/git-lzc
-done
+	GOOS=$goos GOARCH=$goarch go build -o "dist/git-lzc-$platform$ext" ./cmd/git-lzc
+}
 
-
+build "darwin-amd64"
+build "linux-amd64"
+build "linux-386"
+build "windows-amd64"
+build "windows-386"
+build "openbsd-amd64"
+build "openbsd-386"
+build "freebsd-amd64"
+build "freebsd-386"
+build "netbsd-amd64"
+build "netbsd-386"
