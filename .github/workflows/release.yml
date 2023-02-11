@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Publish GitHub Release
+        uses: spenserblack/actions-tag-to-release@v1
+        with:
+          prerelease: auto
+      - name: Build Release Assets
+        run: ./build.sh
+      - name: Publish Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
