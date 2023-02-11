@@ -34,7 +34,7 @@ a single file, the commit message will look like this:
 Update www/index.html
 ```
 
-If you've changed multiple files that share a top-level directory, your
+If you've changed multiple files that share a similar directory, your
 commit message will look like this:
 
 ```
