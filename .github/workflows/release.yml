@@ -25,6 +25,8 @@ jobs:
           cache: true
       - name: Build Release Assets
         run: ./build.sh
+        env:
+          CGO_ENABLED: '0'
       - name: Publish Assets
         uses: softprops/action-gh-release@v1
         with:
