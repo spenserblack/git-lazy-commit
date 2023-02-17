@@ -44,7 +44,7 @@ func (repo Repo) CommitMsg() (string, error) {
 
 	if len(commitableStatuses) == 1 {
 		status := commitableStatuses[0]
-		return fmt.Sprintf("%s %s", statusMap[status.Staged], status.Path), nil
+		return status.Message(), nil
 	}
 
 	return multiFileMsg(commitableStatuses), nil

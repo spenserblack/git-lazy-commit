@@ -53,3 +53,23 @@ func TestBuildCommitMessage(t *testing.T) {
 		}
 	}
 }
+
+// TestBuildCommitMessageWithRename tests that a commit message can be built when a file is renamed.
+func TestBuildCommitMessageWithRename(t *testing.T) {
+	dir := tempRepo(t)
+	repo := Repo(dir)
+
+	f := commitFile(t, dir, "foo.txt", "test")
+	defer f.Close()
+
+	t.Log(`Renaming test.txt to test2.txt`)
+	moveFile(t, dir, "foo.txt", "bar.txt")
+
+	msg, err := repo.CommitMsg()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if msg != "Rename foo.txt to bar.txt" {
+		t.Errorf(`Expected "Rename foo.txt to bar.txt", got %v`, msg)
+	}
+}

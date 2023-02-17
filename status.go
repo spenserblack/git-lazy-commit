@@ -12,17 +12,17 @@ type StatusRecord struct {
 	Unstaged rune
 	// Path is the path to the file.
 	Path string
-	// Dest is the destination path for a rename or copy.
-	Dest string
+	// Src is the original path for a rename or copy.
+	Src string
 }
 
 // Message returns a human-readable message usable for a commit message.
 func (s StatusRecord) Message() string {
 	var builder strings.Builder
 	builder.WriteString(statusMap[s.Staged])
-	if s.Dest != "" {
-		builder.WriteString(" from ")
-		builder.WriteString(s.Dest)
+	if s.Src != "" {
+		builder.WriteRune(' ')
+		builder.WriteString(s.Src)
 		builder.WriteString(" to")
 	}
 	builder.WriteRune(' ')
@@ -83,17 +83,16 @@ func (repo Repo) Status() ([]StatusRecord, error) {
 		stagedStatus := status[0]
 		unstagedStatus := status[1]
 		path := string(status[3:])
-		dest := ""
-		if unstagedStatus == 'R' || unstagedStatus == 'C' {
-			dest = path
+		src := ""
+		if stagedStatus == 'R' || stagedStatus == 'C' {
 			i++
-			path = statuses[i]
+			src = statuses[i]
 		}
 		records = append(records, StatusRecord{
 			Staged:   stagedStatus,
 			Unstaged: unstagedStatus,
 			Path:     path,
-			Dest:     dest,
+			Src:      src,
 		})
 	}
 

@@ -61,6 +61,17 @@ func commitFile(t *testing.T, dir, filename, contents string) *os.File {
 	return f
 }
 
+// Helper function that moves a file.
+func moveFile(t *testing.T, dir, oldName, newName string) {
+	t.Helper()
+	cmd := exec.Command("git", "mv", oldName, newName)
+	cmd.Dir = dir
+	err := cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 // Helper function to group multiple exec commands.
 func execCmds(t *testing.T, dir string, cmds []*exec.Cmd) {
 	t.Helper()
