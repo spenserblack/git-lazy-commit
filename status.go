@@ -16,6 +16,20 @@ type StatusRecord struct {
 	Dest string
 }
 
+// Message returns a human-readable message usable for a commit message.
+func (s StatusRecord) Message() string {
+	var builder strings.Builder
+	builder.WriteString(statusMap[s.Staged])
+	if s.Dest != "" {
+		builder.WriteString(" from ")
+		builder.WriteString(s.Dest)
+		builder.WriteString(" to")
+	}
+	builder.WriteRune(' ')
+	builder.WriteString(s.Path)
+	return builder.String()
+}
+
 // StatusMap maps status codes from "git status --porcelain" to human-readable, imperative
 // verbs.
 //

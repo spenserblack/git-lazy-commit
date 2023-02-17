@@ -68,7 +68,7 @@ func multiFileMsg(statuses []StatusRecord) string {
 	builder.WriteRune('\n')
 
 	for _, status := range statuses {
-		builder.WriteString(fmt.Sprintf("- %s %s\n", statusMap[status.Staged], status.Path))
+		builder.WriteString(fmt.Sprintf("- %s\n", status.Message()))
 	}
 
 	return builder.String()
