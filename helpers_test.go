@@ -1,12 +1,10 @@
 package lazycommit
 
 import (
+	"os"
+	"os/exec"
+	"path"
 	"testing"
-
-	"github.com/go-git/go-billy/v5"
-	"github.com/go-git/go-git/v5"
-	gitconfig "github.com/go-git/go-git/v5/config"
-	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
 // Helper function to create a new repository in a temporary directory.
@@ -14,7 +12,27 @@ import (
 func tempRepo(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	_, err := git.PlainInit(dir, false)
+	cmd := exec.Command("git", "init")
+	cmd.Dir = dir
+	err := cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd = exec.Command("git", "config", "--local", "user.name", "Test User")
+	cmd.Dir = dir
+	err = cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd = exec.Command("git", "config", "--local", "user.email", "test@example.com")
+	cmd.Dir = dir
+	err = cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd = exec.Command("git", "config", "--local", "commit.gpgsign", "false")
+	cmd.Dir = dir
+	err = cmd.Run()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,103 +40,51 @@ func tempRepo(t *testing.T) string {
 }
 
 // Helper function that writes a file, but does not stage or commit it.
-func writeFile(t *testing.T, dir, filename, contents string) (*git.Worktree, billy.File) {
+func writeFile(t *testing.T, dir, filename, contents string) *os.File {
 	t.Helper()
-	rawRepo, err := git.PlainOpen(dir)
+	f, err := os.Create(path.Join(dir, filename))
 	if err != nil {
 		t.Fatal(err)
 	}
-	wt, err := rawRepo.Worktree()
+	_, err = f.WriteString(contents)
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err := wt.Filesystem.Create(filename)
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, err = f.Write([]byte(contents))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return wt, f
+	return f
 }
 
 // Helper function that writes a file and stages it (but doesn't commit it).
-func addFile(t *testing.T, dir, filename, contents string) billy.File {
+func addFile(t *testing.T, dir, filename, contents string) *os.File {
 	t.Helper()
-	wt, f := writeFile(t, dir, filename, contents)
-	_, err := wt.Add(filename)
+	f := writeFile(t, dir, filename, contents)
+	cmd := exec.Command("git", "add", filename)
+	cmd.Dir = dir
+	err := cmd.Run()
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	return f
 }
 
 // Helper function that commits a file to the repository.
-func commitFile(t *testing.T, dir, filename, contents string) billy.File {
+func commitFile(t *testing.T, dir, filename, contents string) *os.File {
 	t.Helper()
-	rawRepo, err := git.PlainOpen(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	wt, err := rawRepo.Worktree()
-	if err != nil {
-		t.Fatal(err)
-	}
 	f := addFile(t, dir, filename, contents)
-	_, err = wt.Commit("test commit", &git.CommitOptions{
-		AllowEmptyCommits: true,
-		Author: &object.Signature{
-			Name:  "Test",
-			Email: "test@example.com",
-		},
-	})
+	cmd := exec.Command("git", "commit", "-m", "test")
+	cmd.Dir = dir
+	err := cmd.Run()
 	if err != nil {
 		t.Fatal(err)
 	}
 	return f
 }
 
-// Helper function that gets the working tree of a repository.
-func getWorktree(t *testing.T, dir string) *git.Worktree {
+// Helper function that moves a file.
+func moveFile(t *testing.T, dir, oldName, newName string) {
 	t.Helper()
-	rawRepo, err := git.PlainOpen(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	wt, err := rawRepo.Worktree()
-	if err != nil {
-		t.Fatal(err)
-	}
-	return wt
-}
-
-// Helper function that gets the status of a repository.
-func getStatus(t *testing.T, dir string) git.Status {
-	t.Helper()
-	wt := getWorktree(t, dir)
-	status, err := wt.Status()
-	if err != nil {
-		t.Fatal(err)
-	}
-	return status
-}
-
-// Helper function that updates a repo's config.
-func updateConfig(t *testing.T, dir string, f func(*gitconfig.Config)) {
-	t.Helper()
-	rawRepo, err := git.PlainOpen(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	config, err := rawRepo.Config()
-	if err != nil {
-		t.Fatal(err)
-	}
-	f(config)
-	err = rawRepo.Storer.SetConfig(config)
+	cmd := exec.Command("git", "mv", oldName, newName)
+	cmd.Dir = dir
+	err := cmd.Run()
 	if err != nil {
 		t.Fatal(err)
 	}

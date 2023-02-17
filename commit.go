@@ -5,74 +5,57 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
-
 	"github.com/spenserblack/git-lazy-commit/pkg/fileutils"
 )
 
 // Commit commits all changes in the repository.
 //
-// It returns the commit hash and the commit message.
-func (r *LazyRepo) Commit() (hash plumbing.Hash, msg string, err error) {
-	msg, err = r.CommitMsg()
+// It returns the output of the commit command.
+func (repo Repo) Commit() ([]byte, error) {
+	msg, err := repo.CommitMsg()
 	if err != nil {
-		return
+		return nil, err
 	}
-
-	hash, err = r.wt.Commit(msg, &git.CommitOptions{})
-	return
+	cmd, err := repo.cmd("commit", "-m", msg)
+	if err != nil {
+		return nil, err
+	}
+	return cmd.Output()
 }
 
 // CommitMsg builds a commit message using the tracked files in the repository.
-func (r *LazyRepo) CommitMsg() (string, error) {
-	status, err := r.status()
+func (repo Repo) CommitMsg() (string, error) {
+	statuses, err := repo.Status()
 	if err != nil {
 		return "", err
 	}
-	for filename, fileStatus := range status {
-		if fileStatus.Staging == git.Unmodified || fileStatus.Staging == git.Untracked {
-			delete(status, filename)
+
+	// NOTE: Filtering to only statuses that are staged and can be used for the commit message.
+	commitableStatuses := make([]StatusRecord, 0, len(statuses))
+	for _, status := range statuses {
+		if _, ok := statusMap[status.Staged]; ok {
+			commitableStatuses = append(commitableStatuses, status)
 		}
 	}
 
-	if len(status) == 0 {
+	if len(commitableStatuses) == 0 {
 		return "", errors.New("no tracked files")
 	}
-	if len(status) == 1 {
-		for filename, fileStatus := range status {
-			return singleFileMsg(filename, fileStatus), nil
-		}
-	}
-	return multiFileMsg(status), nil
-}
 
-func singleFileMsg(filename string, fileStatus *git.FileStatus) string {
-	statusString := ""
-	switch fileStatus.Staging {
-	case git.Added:
-		statusString = "Create"
-	case git.Deleted:
-		statusString = "Delete"
-	case git.Modified:
-		statusString = "Update"
-	case git.Renamed:
-		statusString = "Rename to"
-	case git.Copied:
-		statusString = "Copy to"
-	default:
-		statusString = "Do something to"
+	if len(commitableStatuses) == 1 {
+		status := commitableStatuses[0]
+		return status.Message(), nil
 	}
 
-	return fmt.Sprintf("%s %s", statusString, filename)
+	return multiFileMsg(commitableStatuses), nil
 }
 
-func multiFileMsg(status git.Status) string {
+// MultiFileMsg builds a commit message from multiple files.
+func multiFileMsg(statuses []StatusRecord) string {
 	var builder strings.Builder
-
-	filenames := make([]string, 0, len(status))
-	for name := range status {
-		filenames = append(filenames, name)
+	filenames := make([]string, 0, len(statuses))
+	for _, status := range statuses {
+		filenames = append(filenames, status.Path)
 	}
 
 	sharedDir := fileutils.SharedDirectory(filenames)
@@ -84,9 +67,8 @@ func multiFileMsg(status git.Status) string {
 	}
 	builder.WriteRune('\n')
 
-	for filename, fileStatus := range status {
-		msgItem := singleFileMsg(filename, fileStatus)
-		builder.WriteString(fmt.Sprintf("- %s\n", msgItem))
+	for _, status := range statuses {
+		builder.WriteString(fmt.Sprintf("- %s\n", status.Message()))
 	}
 
 	return builder.String()

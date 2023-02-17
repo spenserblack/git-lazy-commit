@@ -3,53 +3,73 @@ package lazycommit
 import (
 	"strings"
 	"testing"
-
-	gitconfig "github.com/go-git/go-git/v5/config"
 )
 
 // Tests that a commit message can't be built when there are no staged changes.
-func TestBuildCommitMessageNoStaged(t *testing.T) {
+func TestBuildCommitMessage(t *testing.T) {
+	t.Log("Creating a new repo.")
 	dir := tempRepo(t)
-	repo, err := OpenRepo(dir)
+	repo := Repo(dir)
+
+	_, err := repo.CommitMsg()
+	if err == nil && err.Error() != "no tracked files" {
+		t.Errorf(`Expected "no tracked files", got %v`, err)
+	}
+
+	f := commitFile(t, dir, "test.txt", "test")
+	defer f.Close()
+
+	t.Log(`Modifying test.txt`)
+	commitFile(t, dir, "test.txt", "")
+	addFile(t, dir, "test.txt", "different text")
+
+	msg, err := repo.CommitMsg()
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = repo.CommitMsg()
-	if err == nil {
-		t.Fatal("expected error")
+	if msg != "Update test.txt" {
+		t.Errorf(`Expected "Update test.txt", got %v`, msg)
+	}
+
+	t.Log(`Adding a new file`)
+	addFile(t, dir, "test2.txt", "test")
+
+	msg, err = repo.CommitMsg()
+	if err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(msg, "\n")
+	if lines[0] != "Update files" {
+		t.Errorf(`Expected "Update files" in the header, got %v`, lines[0])
+	}
+	if lines[1] != "" {
+		t.Errorf(`Expected an empty line after the header, got %v`, lines[1])
+	}
+	body := strings.Join(lines[2:], "\n")
+	t.Logf("Body:\n %v", body)
+	for _, want := range []string{"- Update test.txt", "- Create test2.txt"} {
+		if !strings.Contains(body, want) {
+			t.Errorf(`Expected %v in the body`, want)
+		}
 	}
 }
 
-// Tests that commit commits all files in the worktree.
-func TestCommit(t *testing.T) {
+// TestBuildCommitMessageWithRename tests that a commit message can be built when a file is renamed.
+func TestBuildCommitMessageWithRename(t *testing.T) {
 	dir := tempRepo(t)
-	updateConfig(t, dir, func(config *gitconfig.Config) {
-		config.User.Name = "Test User"
-		config.User.Email = "test@example.com"
-	})
-	addFile(t, dir, "test.txt", "test")
-	addFile(t, dir, "test2.txt", "test")
+	repo := Repo(dir)
 
-	repo, err := OpenRepo(dir)
+	f := commitFile(t, dir, "foo.txt", "test")
+	defer f.Close()
+
+	t.Log(`Renaming test.txt to test2.txt`)
+	moveFile(t, dir, "foo.txt", "bar.txt")
+
+	msg, err := repo.CommitMsg()
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	_, msg, err := repo.Commit()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	wantHeader := "Update files"
-	wantBodyLines := []string{"- Create test.txt", "- Create test2.txt"}
-
-	if !strings.HasPrefix(msg, wantHeader) {
-		t.Errorf("expected commit message to start with %q, got %q", wantHeader, msg)
-	}
-
-	for _, line := range wantBodyLines {
-		if !strings.Contains(msg, line) {
-			t.Errorf("expected commit message to contain %q, got %q", line, msg)
-		}
+	if msg != "Rename foo.txt to bar.txt" {
+		t.Errorf(`Expected "Rename foo.txt to bar.txt", got %v`, msg)
 	}
 }
