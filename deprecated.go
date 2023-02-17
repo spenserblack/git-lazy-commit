@@ -23,7 +23,7 @@ func (r *LazyRepo) NoStaged() (bool, error) {
 
 // StageAll stages all changes in the repository.
 func (r *LazyRepo) StageAll() error {
-	return r.wt.AddWithOptions(&git.AddOptions{All: true})
+	return r.r.StageAll()
 }
 
 // Status gets the repo's status.
