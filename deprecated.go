@@ -25,8 +25,3 @@ func (r *LazyRepo) NoStaged() (bool, error) {
 func (r *LazyRepo) StageAll() error {
 	return r.r.StageAll()
 }
-
-// Status gets the repo's status.
-func (r *LazyRepo) status() (git.Status, error) {
-	return r.wt.Status()
-}
