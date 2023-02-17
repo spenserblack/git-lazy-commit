@@ -3,14 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	lazycommit "github.com/spenserblack/git-lazy-commit"
 )
 
 func main() {
-	repo, err := lazycommit.OpenRepo(".")
-	onError(err)
+	repo := lazycommit.Repo(".")
 
 	noStaged, err := repo.NoStaged()
 	onError(err)
@@ -19,12 +17,10 @@ func main() {
 		onError(repo.StageAll())
 	}
 
-	hash, msg, err := repo.Commit()
+	out, err := repo.Commit()
 	onError(err)
 
-	msgLines := strings.Split(msg, "\n")
-
-	fmt.Printf("[%s] %s\n", hash, msgLines[0])
+	fmt.Printf("%s", out)
 }
 
 func onError(err error) {
