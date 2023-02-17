@@ -8,6 +8,21 @@ import (
 	"github.com/spenserblack/git-lazy-commit/pkg/fileutils"
 )
 
+// Commit commits all changes in the repository.
+//
+// It returns the output of the commit command.
+func (repo Repo) Commit() ([]byte, error) {
+	msg, err := repo.CommitMsg()
+	if err != nil {
+		return nil, err
+	}
+	cmd, err := repo.cmd("commit", "-m", msg)
+	if err != nil {
+		return nil, err
+	}
+	return cmd.Output()
+}
+
 // CommitMsg builds a commit message using the tracked files in the repository.
 func (repo Repo) CommitMsg() (string, error) {
 	statuses, err := repo.Status()

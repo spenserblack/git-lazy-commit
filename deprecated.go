@@ -1,13 +1,7 @@
 package lazycommit
 
 import (
-	"errors"
-	"fmt"
-	"strings"
-
-	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/spenserblack/git-lazy-commit/pkg/fileutils"
 )
 
 // LazyRepo is a wrapper around go-git's Repository for simpler usage.
@@ -39,13 +33,7 @@ func (r *LazyRepo) StageAll() error {
 //
 // It returns the commit hash and the commit message.
 func (r *LazyRepo) Commit() (hash plumbing.Hash, msg string, err error) {
-	msg, err = r.CommitMsg()
-	if err != nil {
-		return
-	}
-
-	hash, err = r.wt.Commit(msg, &git.CommitOptions{})
-	return
+	panic("Incompatible types")
 }
 
 // CommitMsg builds a commit message using the tracked files in the repository.
