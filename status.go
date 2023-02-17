@@ -1,16 +1,15 @@
 package lazycommit
 
 import (
-	"os/exec"
 	"strings"
 )
 
 // StatusMap maps status codes from "git status --porcelain" to human-readable, imperative
 // verbs.
 var statusMap = map[rune]string{
-	'M':  "Update",
-	'A':  "Create",
-	'D':  "Delete",
+	'M': "Update",
+	'A': "Create",
+	'D': "Delete",
 	// NOTE: With -z, the *new* filename is followed by the old filename, separated by a NUL.
 	'R': "Rename",
 	'C': "Copy",
@@ -23,8 +22,7 @@ var statusMap = map[rune]string{
 // NoStaged checks if there are no staged changes (added files, changed files, removed files)
 // in the repository.
 func (repo Repo) NoStaged() (bool, error) {
-	cmd := exec.Command("git", "status", "--porcelain", "-z", "--untracked-files=no")
-	cmd.Dir = string(repo)
+	cmd := repo.cmd("status", "--porcelain", "-z", "--untracked-files=no")
 	out, err := cmd.Output()
 	if err != nil {
 		return false, err
