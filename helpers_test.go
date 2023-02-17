@@ -71,15 +71,3 @@ func moveFile(t *testing.T, dir, oldName, newName string) {
 		t.Fatal(err)
 	}
 }
-
-// Helper function to group multiple exec commands.
-func execCmds(t *testing.T, dir string, cmds []*exec.Cmd) {
-	t.Helper()
-	for _, cmd := range cmds {
-		cmd.Dir = dir
-		err := cmd.Run()
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-}
