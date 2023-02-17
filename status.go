@@ -22,7 +22,10 @@ var statusMap = map[rune]string{
 // NoStaged checks if there are no staged changes (added files, changed files, removed files)
 // in the repository.
 func (repo Repo) NoStaged() (bool, error) {
-	cmd := repo.cmd("status", "--porcelain", "-z", "--untracked-files=no")
+	cmd, err := repo.cmd("status", "--porcelain", "-z", "--untracked-files=no")
+	if err != nil {
+		return false, err
+	}
 	out, err := cmd.Output()
 	if err != nil {
 		return false, err
