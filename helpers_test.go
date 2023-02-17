@@ -18,6 +18,24 @@ func tempRepo(t *testing.T) string {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cmd = exec.Command("git", "config", "--local", "user.name", "Test User")
+	cmd.Dir = dir
+	err = cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd = exec.Command("git", "config", "--local", "user.email", "test@example.com")
+	cmd.Dir = dir
+	err = cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd = exec.Command("git", "config", "--local", "commit.gpgsign", "false")
+	cmd.Dir = dir
+	err = cmd.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
 	return dir
 }
 
