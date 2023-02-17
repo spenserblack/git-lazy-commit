@@ -20,7 +20,7 @@ func TestStageAll(t *testing.T) {
 
 	tests := []struct {
 		filename string
-		want    string
+		want     string
 	}{
 		{"test.txt", "A  test.txt\x00"},
 		{"test2.txt", "A  test2.txt\x00"},
