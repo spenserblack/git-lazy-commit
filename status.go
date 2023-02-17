@@ -16,9 +16,6 @@ var statusMap = map[rune]string{
 	// NOTE: '?' is untracked, ' ' is unmodified
 }
 
-// Status runs "git status --porcelain -z" parses the output and returns a list of
-// files with their status.
-
 // NoStaged checks if there are no staged changes (added files, changed files, removed files)
 // in the repository.
 func (repo Repo) NoStaged() (bool, error) {
