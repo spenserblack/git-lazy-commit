@@ -18,6 +18,8 @@ type StatusRecord struct {
 
 // StatusMap maps status codes from "git status --porcelain" to human-readable, imperative
 // verbs.
+//
+// NOTE: See https://git-scm.com/docs/git-status#_short_format
 var statusMap = map[rune]string{
 	'M': "Update",
 	'A': "Create",
@@ -25,7 +27,9 @@ var statusMap = map[rune]string{
 	// NOTE: With -z, the *new* filename is followed by the old filename, separated by a NUL.
 	'R': "Rename",
 	'C': "Copy",
+	'T': "Change type of",
 	// NOTE: '?' is untracked, ' ' is unmodified
+	// NOTE: '!' is ignored, 'U' is unmerged
 }
 
 // NoStaged checks if there are no staged changes (added files, changed files, removed files)
