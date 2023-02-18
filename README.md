@@ -59,6 +59,14 @@ Update files
 
 ## Installation
 
+### Unix
+
+```shell
+curl https://raw.githubusercontent.com/spenserblack/git-lazy-commit/main/install.sh | sh
+```
+
+### From GitHub Releases
+
 Download the appropriate executable from the [release assets][latest-release],
 rename it to `git-lzc`, and add it to a location in `PATH`.
 
