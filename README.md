@@ -1,5 +1,6 @@
 # Lazy Commit
 
+[![GitHub all releases](https://img.shields.io/github/downloads/spenserblack/git-lazy-commit/total?logo=github)](https://github.com/spenserblack/git-lazy-commit/releases)
 [![CI](https://github.com/spenserblack/git-lazy-commit/actions/workflows/ci.yml/badge.svg)](https://github.com/spenserblack/git-lazy-commit/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/spenserblack/git-lazy-commit/branch/main/graph/badge.svg?token=nFiCRNnexU)](https://codecov.io/gh/spenserblack/git-lazy-commit)
 [![Go Report Card](https://goreportcard.com/badge/github.com/spenserblack/git-lazy-commit)](https://goreportcard.com/report/github.com/spenserblack/git-lazy-commit)
