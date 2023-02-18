@@ -65,6 +65,14 @@ Update files
 curl https://raw.githubusercontent.com/spenserblack/git-lazy-commit/main/install.sh | sh
 ```
 
+## Windows (PowerShell)
+
+You may need to run this as an administrator.
+
+```powershell
+Invoke-WebRequest "https://raw.githubusercontent.com/spenserblack/git-lazy-commit/main/install.ps1" | Invoke-Expression
+```
+
 ### From GitHub Releases
 
 Download the appropriate executable from the [release assets][latest-release],
