@@ -20,7 +20,7 @@ jobs:
           go-version: '1.20'
           cache: true
       - name: Build Release Assets
-        run: ./build.sh
+        run: make all
         env:
           CGO_ENABLED: '0'
       - name: Publish GitHub Release
