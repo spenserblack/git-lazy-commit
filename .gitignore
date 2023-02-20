@@ -1,3 +1,4 @@
 # Built assets
 git-lzc
 git-lzc-*
+!/cmd/git-lzc
