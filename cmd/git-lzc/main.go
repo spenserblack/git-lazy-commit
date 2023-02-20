@@ -3,24 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
-
-	lazycommit "github.com/spenserblack/git-lazy-commit"
 )
 
 func main() {
-	repo := lazycommit.Repo(".")
-
-	noStaged, err := repo.NoStaged()
-	onError(err)
-
-	if noStaged {
-		onError(repo.StageAll())
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
-
-	out, err := repo.Commit()
-	onError(err)
-
-	fmt.Printf("%s", out)
 }
 
 func onError(err error) {
