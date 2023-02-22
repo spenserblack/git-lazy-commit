@@ -5,6 +5,7 @@ OS_NAME=$(uname -s)
 ARCH_NAME=$(uname -m)
 OS=""
 ARCH=""
+INSTALL_DIR=${INSTALL_DIR:-/usr/local/bin}
 
 if [ "$OS_NAME" = "Linux" ]; then
 	OS="linux"
@@ -30,4 +31,5 @@ else
 	exit 1
 fi
 
-sudo wget -O /usr/local/bin/git-lzc "https://github.com/spenserblack/git-lazy-commit/releases/latest/download/git-lzc-$OS-$ARCH"
+sudo wget -O "$INSTALL_DIR/git-lzc" "https://github.com/spenserblack/git-lazy-commit/releases/latest/download/git-lzc-$OS-$ARCH"
+sudo chmod +x "$INSTALL_DIR/git-lzc"
