@@ -24,8 +24,6 @@ jobs:
           CGO_ENABLED: '0'
       - name: Publish GitHub Release
         uses: spenserblack/actions-tag-to-release@v2
-        with:
-          prerelease: auto
       - name: Publish Assets
         uses: softprops/action-gh-release@v1
         with:
