@@ -23,7 +23,7 @@ jobs:
         env:
           CGO_ENABLED: '0'
       - name: Publish GitHub Release
-        uses: spenserblack/actions-tag-to-release@v1
+        uses: spenserblack/actions-tag-to-release@v2
         with:
           prerelease: auto
       - name: Publish Assets
