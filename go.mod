@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/cli/safeexec v1.0.1
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 )
 
 require (
