@@ -7,4 +7,4 @@ if ($Env:PROCESSOR_ARCHITECTURE -eq "x86") {
     $arch = "amd64"
 }
 
-Invoke-WebRequest -OutFile "$Env:ProgramFiles\Git\usr\bin\git-lzc.exe" -Uri "https://github.com/spenserblack/git-lazy-commit/releases/latest/download/git-lzc-windows-$arch.exe"
+Invoke-WebRequest -OutFile "$Env:ProgramFiles\Git\usr\bin\git-lazy-commit.exe" -Uri "https://github.com/spenserblack/git-lazy-commit/releases/latest/download/git-lazy-commit-windows-$arch.exe"

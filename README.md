@@ -9,12 +9,12 @@ Be lazy and just commit
 
 ## Description
 
-This provides the `git lzc` command. This command can be used
+This provides the `git lazy-commit` command. This command can be used
 in situations where you don't really care about choosing which
 changes to track or writing your commit message -- you just want to
 commit your work.
 
-By its nature, `git lzc` can very easily add accidental changes
+By its nature, `git lazy-commit` can very easily add accidental changes
 to the git history if the user isn't careful. So, while this
 tool may be appealing to git beginners, its target audience is
 actually experienced git users who know when they want to break
@@ -23,13 +23,13 @@ the rules for creating good commits.
 ### Staged Changes
 
 If you have staged changes (`git add path/to/file`), then
-`git lzc` will commit those staged changes. If you *do not*
-have any staged changes, then `git lzc` will commit *all* changes,
+`git lazy-commit` will commit those staged changes. If you *do not*
+have any staged changes, then `git lazy-commit` will commit *all* changes,
 **including untracked files** (so be careful!).
 
 ### Commit Messages
 
-`git lzc` will write your commit message for you. If you've changed
+`git lazy-commit` will write your commit message for you. If you've changed
 a single file, the commit message will look like this:
 
 ```
@@ -77,6 +77,15 @@ Invoke-WebRequest "https://raw.githubusercontent.com/spenserblack/git-lazy-commi
 ### From GitHub Releases
 
 Download the appropriate executable from the [release assets][latest-release],
-rename it to `git-lzc`, and add it to a location in `PATH`.
+rename it to `git-lazy-commit`, and add it to a location in `PATH`.
+
+## Suggested Alias
+
+`git lazy-commit` can be annoying to type frequently, so you can create an alias
+so that you only need to call `git lzc`.
+
+```shell
+git config --global alias.lzc lazy-commit
+```
 
 [latest-release]: https://github.com/spenserblack/git-lazy-commit/releases/latest

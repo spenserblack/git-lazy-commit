@@ -1,4 +1,5 @@
 # Built assets
-git-lzc
-git-lzc-*
-!/cmd/git-lzc
+git-lazy-commit
+git-lazy-commit-*
+!/cmd/git-lazy-commit
+/dist/

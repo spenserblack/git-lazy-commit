@@ -31,5 +31,5 @@ else
 	exit 1
 fi
 
-sudo wget -O "$INSTALL_DIR/git-lzc" "https://github.com/spenserblack/git-lazy-commit/releases/latest/download/git-lzc-$OS-$ARCH"
-sudo chmod +x "$INSTALL_DIR/git-lzc"
+sudo wget -O "$INSTALL_DIR/git-lazy-commit" "https://github.com/spenserblack/git-lazy-commit/releases/latest/download/git-lazy-commit-$OS-$ARCH"
+sudo chmod +x "$INSTALL_DIR/git-lazy-commit"
