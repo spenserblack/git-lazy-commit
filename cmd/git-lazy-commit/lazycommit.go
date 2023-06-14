@@ -9,7 +9,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "git-lzc",
+	Use:   "git-lazy-commit",
 	Short: "Lazy Commit generates commit messages for you",
 	Long: `Lazy Commit checks your git status, stages files if they're all unstaged,
 				and generates a commit message for you.`,
