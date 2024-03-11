@@ -25,7 +25,7 @@ jobs:
       - name: Publish GitHub Release
         uses: spenserblack/actions-tag-to-release@v3
       - name: Publish Assets
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*
